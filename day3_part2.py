@@ -8,19 +8,21 @@ class Solution:
 				while index < len(line):
 					dont_pos = line.find("don't()", index)
 					do_pos = line.find("do()", index)
-					if (dont_pos != -1 and (do_pos == -1 or dont_pos < do_pos)):
+					mul_pos = line.find("mul(", index)
+					# if mul_pos < dont_pos and enabled == True:
+					# 	enabled = True
+					if (dont_pos != -1 and (do_pos == -1 or dont_pos < do_pos) and (mul_pos == -1 or dont_pos < mul_pos)):
 						enabled = False
 						index = dont_pos + len("don't()")
 						continue
-					elif (do_pos != -1 and (dont_pos == -1 or do_pos < dont_pos)):
+					elif (do_pos != -1 and (dont_pos == -1 or do_pos < dont_pos) and (mul_pos == -1 or do_pos < mul_pos)):
 						enabled = True
 						index = do_pos + len("do()")
 						continue
-					
+					i = line.find("mul(", index)
+					if i == -1:
+						break  # No more instances in this line):
 					if enabled:
-						i = line.find("mul(", index)
-						if i == -1:
-							break  # No more instances in this line
 						try:
 							num1_start = i+4
 							num1_end = line.find(",", num1_start)
@@ -35,9 +37,11 @@ class Solution:
 
 							result += num1 * num2
 							print("num1: ", num1, "num2: ", num2)
-							index = i + 1
+							index = num2_end + 1
 						except ValueError:
 							index += 1
+					else:
+						index += 1 
 		return result
 
 
